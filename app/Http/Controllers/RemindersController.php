@@ -85,10 +85,10 @@ class RemindersController extends Controller
     {
         try {
 
-            $user = ReminderService::upsert($request->all());
+            $reminder = ReminderService::upsert($request->all());
 
             return response([
-                "data" => $user,
+                "data" => $reminder,
                 "success" => true,
                 "message" => trans("success.create.default"),
             ], ResponseCode::UPSERT);
@@ -114,10 +114,10 @@ class RemindersController extends Controller
     {
         try {
 
-            $user = ReminderService::upsert($request->all(), $id);
+            $reminder = ReminderService::upsert($request->all(), $id);
 
             return response([
-                "data" => $user,
+                "data" => $reminder,
                 "success" => true,
                 "message" => trans("success.update.default"),
             ], ResponseCode::UPSERT);
@@ -141,8 +141,8 @@ class RemindersController extends Controller
     {
         try {
 
-            $data = ReminderService::findOrFail($id);
-            $data->forceDelete();
+            $reminder = Reminder::findOrFail($id);
+            $reminder->forceDelete();
 
             return response([
                 "data" => [],

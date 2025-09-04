@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\DevicesController;
 use App\Http\Controllers\EntriesController;
 use App\Http\Controllers\HabitsController;
 use App\Http\Controllers\RemindersController;
@@ -79,9 +80,22 @@ Route::group(['prefix' => 'v1'], function () {
 
         /** secured routes */
         Route::middleware("auth:sanctum")->get('/', [RemindersController::class, 'index']);
-        Route::middleware("auth:sanctum")->get('/{reminderId}', [RemindersController::class, 'get'])->where("entryId", "[0-9]+");
+        Route::middleware("auth:sanctum")->get('/{id}', [RemindersController::class, 'get'])->where("entryId", "[0-9]+");
         Route::middleware("auth:sanctum")->post('/', [RemindersController::class, 'create']);
-        Route::middleware("auth:sanctum")->put('/{reminderId}', [RemindersController::class, 'update'])->where("entryId", "[0-9]+");
-        Route::middleware("auth:sanctum")->delete('/{reminderId}', [RemindersController::class, 'delete'])->where("entryId", "[0-9]+");
+        Route::middleware("auth:sanctum")->put('/{id}', [RemindersController::class, 'update'])->where("entryId", "[0-9]+");
+        Route::middleware("auth:sanctum")->delete('/{id}', [RemindersController::class, 'delete'])->where("entryId", "[0-9]+");
+    });
+
+    /**
+     * API routes habit reminders
+     */
+    Route::group(['prefix' => 'devices'], function () {
+
+        /** secured routes */
+        Route::middleware("auth:sanctum")->get('/', [DevicesController::class, 'index']);
+        Route::middleware("auth:sanctum")->get('/{id}', [DevicesController::class, 'get'])->where("entryId", "[0-9]+");
+        Route::middleware("auth:sanctum")->post('/', [DevicesController::class, 'create']);
+        Route::middleware("auth:sanctum")->put('/{id}', [DevicesController::class, 'update'])->where("entryId", "[0-9]+");
+        Route::middleware("auth:sanctum")->delete('/{id}', [DevicesController::class, 'delete'])->where("entryId", "[0-9]+");
     });
 });

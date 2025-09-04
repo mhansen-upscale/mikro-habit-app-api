@@ -3,15 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Habit;
-use App\Models\Entry;
+use App\Models\Device;
+use App\Models\Reminder;
+use App\Models\User;
+use App\Services\Core\DocumentsService;
 use App\Services\DataService;
-use App\Services\EntryService;
-use App\Services\HabitService;
+use App\Services\DeviceService;
+use App\Services\ReminderService;
+use App\Services\UserService;
 use App\Structs\ResponseCode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
-class EntriesController extends Controller
+class DevicesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,7 +27,7 @@ class EntriesController extends Controller
         try {
 
             $queryData = $request->all();
-            $data = DataService::getInstance(Entry::class, $queryData)->getResult();
+            $data = DataService::getInstance(Device::class, $queryData)->getResult();
 
             return response([
                 "data" => $data,
@@ -54,10 +60,10 @@ class EntriesController extends Controller
                 $relations = json_decode($relations, TRUE);
             }
 
-            $entry = Entry::with($relations)->findOrFail($id);
+            $data = User::with($relations)->findOrFail($id);
 
             return response([
-                "data" => $entry,
+                "data" => $data,
                 "success" => true,
                 "message" => NULL,
             ], ResponseCode::SUCCESS);
@@ -81,10 +87,10 @@ class EntriesController extends Controller
     {
         try {
 
-            $entry = EntryService::upsert($request->all());
+            $device = DeviceService::upsert($request->all());
 
             return response([
-                "data" => $entry,
+                "data" => $device,
                 "success" => true,
                 "message" => trans("success.create.default"),
             ], ResponseCode::UPSERT);
@@ -110,10 +116,10 @@ class EntriesController extends Controller
     {
         try {
 
-            $entry = EntryService::upsert($request->all(), $id);
+            $device = DeviceService::upsert($request->all(), $id);
 
             return response([
-                "data" => $entry,
+                "data" => $device,
                 "success" => true,
                 "message" => trans("success.update.default"),
             ], ResponseCode::UPSERT);
@@ -137,8 +143,8 @@ class EntriesController extends Controller
     {
         try {
 
-            $entry = Entry::findOrFail($id);
-            $entry->forceDelete();
+            $device = Device::findOrFail($id);
+            $device->forceDelete();
 
             return response([
                 "data" => [],

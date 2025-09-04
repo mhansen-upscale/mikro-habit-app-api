@@ -27,7 +27,7 @@ class UserService
 
         Validator::make($data, [
             'name' => 'required',
-            'email' => 'required_without:id|unique:users,email',
+            'email' => 'required_without:id|unique:users,email,' . $id,
             'password' => 'required_without:id|min:6'
         ])->validate();
 
