@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\HabitEntriesController;
+use App\Http\Controllers\HabitsController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +42,39 @@ Route::group(['prefix' => 'v1'], function () {
         Route::middleware("auth:sanctum")->post('/', [UsersController::class, 'create']);
         Route::middleware("auth:sanctum")->put('/{id}', [UsersController::class, 'update'])->where("id", "[0-9]+");;
         Route::middleware("auth:sanctum")->delete('/{id}', [UsersController::class, 'delete'])->where("id", "[0-9]+");
+    });
+
+    /**
+     * API routes habits
+     */
+    Route::group(['prefix' => 'habits'], function () {
+
+        /** secured routes */
+        Route::middleware("auth:sanctum")->get('/', [HabitsController::class, 'index']);
+        Route::middleware("auth:sanctum")->post('/', [HabitsController::class, 'create']);
+        Route::middleware("auth:sanctum")->put('/{id}', [HabitsController::class, 'update'])->where("id", "[0-9]+");;
+        Route::middleware("auth:sanctum")->delete('/{id}', [HabitsController::class, 'delete'])->where("id", "[0-9]+");
+
+        /**
+         * API routes habits
+         */
+        Route::group(['prefix' => '{id}'], function () {
+
+            Route::middleware("auth:sanctum")->get('/', [HabitsController::class, 'get'])->where("id", "[0-9]+");
+
+            /**
+             * API routes habits
+             */
+            Route::group(['prefix' => 'entries'], function () {
+
+                /** secured routes */
+                Route::middleware("auth:sanctum")->get('/', [HabitEntriesController::class, 'index']);
+                Route::middleware("auth:sanctum")->get('/{entryId}', [HabitEntriesController::class, 'get'])->where("entryId", "[0-9]+");
+                Route::middleware("auth:sanctum")->post('/', [HabitEntriesController::class, 'create']);
+                Route::middleware("auth:sanctum")->put('/{entryId}', [HabitEntriesController::class, 'update'])->where("entryId", "[0-9]+");;
+                Route::middleware("auth:sanctum")->delete('/{entryId}', [HabitEntriesController::class, 'delete'])->where("entryId", "[0-9]+");
+            });
+        });
     });
 
     /**

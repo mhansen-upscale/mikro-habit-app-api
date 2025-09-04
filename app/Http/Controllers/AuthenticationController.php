@@ -169,7 +169,7 @@ class AuthenticationController extends Controller
 
             DB::table('password_reset_tokens')->where("email", $request->input("email"))->delete();
 
-            $token = Str::UUID();
+            $token = rand(10000000, 99999999);
             DB::table('password_reset_tokens')->insert([
                 'email' => $request->input("email"),
                 'token' => $token,

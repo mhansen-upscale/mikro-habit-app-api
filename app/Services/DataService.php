@@ -22,9 +22,11 @@ class DataService
 
     private array $sums;
 
+    private mixed $extraFilter;
+
     private string|null $select;
 
-    private function __construct($model, $queryData)
+    private function __construct($model, $queryData, $extraFilter = null)
     {
         $this->setModel($model);
         $this->setSort($queryData["sort"] ?? "id|ASC");
@@ -36,6 +38,7 @@ class DataService
         $this->setCounts($queryData["counts"] ?? []);
         $this->setGroupBy($queryData["groupBy"] ?? null);
         $this->setSums($queryData["aggregate"] ?? []);
+        $this->setExtraFilter($extraFilter ?? []);
 
         $this->query();
     }
@@ -44,10 +47,10 @@ class DataService
      * @param $model
      * @param array $queryData
      */
-    public static function getInstance($model, array $queryData): ?DataService
+    public static function getInstance($model, array $queryData, $extraFilter = null): ?DataService
     {
         if(self::$instance == NULL) {
-            self::$instance = new DataService($model, $queryData);
+            self::$instance = new DataService($model, $queryData, $extraFilter);
         }
 
         return self::$instance;
@@ -179,6 +182,26 @@ class DataService
     }
 
     /**
+     * @param $extraFilter
+     * @return void
+     */
+    private function setExtraFilter($extraFilter): void
+    {
+        if(is_string($extraFilter)) {
+            $extraFilter = json_decode($extraFilter, TRUE);
+        }
+        $this->extraFilter = $extraFilter;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtraFilter(): string
+    {
+        return $this->extraFilter;
+    }
+
+    /**
      * @param $relations
      * @return void
      */
@@ -274,6 +297,10 @@ class DataService
             $query->orderby($sortBy[0], $sortBy[1]);
         } else {
             $query->orderby("ASC", $model->getTable() . ".id");
+        }
+
+        if(!empty($this->extraFilter)) {
+            $this->filter[] = $this->extraFilter;
         }
 
         foreach($this->filter as $filter) {
