@@ -4,40 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Habit;
-use App\Models\HabitEntry;
+use App\Models\Entry;
 use App\Services\DataService;
-use App\Services\HabitEntryService;
+use App\Services\EntryService;
 use App\Services\HabitService;
 use App\Structs\ResponseCode;
 use Illuminate\Http\Request;
 
-class HabitEntriesController extends Controller
+class EntriesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, int $id) : mixed
+    public function index(Request $request) : mixed
     {
         try {
 
             $queryData = $request->all();
-            $queryData["perPage"] = 0;
-
-            $extraFilter = [
-                "container" => [
-                    "type" => "where",
-                    "queries" => [
-                        [
-                            "type" => "where",
-                            "key" => "habit_id",
-                            "criteria" => $id,
-                            "operator" => "="
-                        ]
-                    ]
-                ]
-            ];
-
-            $data = DataService::getInstance(HabitEntry::class, $queryData, $extraFilter)->getResult();
+            $data = DataService::getInstance(Entry::class, $queryData)->getResult();
 
             return response([
                 "data" => $data,
@@ -60,7 +44,7 @@ class HabitEntriesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function get(Request $request, int $id,  int $entryId)
+    public function get(Request $request, int $id)
     {
         try {
 
@@ -70,7 +54,7 @@ class HabitEntriesController extends Controller
                 $relations = json_decode($relations, TRUE);
             }
 
-            $data = HabitEntry::with($relations)->where("habit_id", $id)->findOrFail($entryId);
+            $data = Entry::with($relations)->findOrFail($id);
 
             return response([
                 "data" => $data,
@@ -97,7 +81,7 @@ class HabitEntriesController extends Controller
     {
         try {
 
-            $habit = HabitEntryService::upsert($request->all());
+            $habit = EntryService::upsert($request->all());
 
             return response([
                 "data" => $habit,
@@ -122,11 +106,11 @@ class HabitEntriesController extends Controller
      * @param int $id
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function update(Request $request, int $entryId)
+    public function update(Request $request, int $id)
     {
         try {
 
-            $habit = HabitEntryService::upsert($request->all(), $entryId);
+            $habit = EntryService::upsert($request->all(), $id);
 
             return response([
                 "data" => $habit,
@@ -149,11 +133,11 @@ class HabitEntriesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(int $entryId)
+    public function delete(int $id)
     {
         try {
 
-            $habit = HabitEntry::findOrFail($entryId);
+            $habit = Entry::findOrFail($id);
             $habit->forceDelete();
 
             return response([

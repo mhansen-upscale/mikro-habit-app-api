@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class HabitEntry extends Model
+class Entry extends Model
 {
 
     protected $guarded = [];
