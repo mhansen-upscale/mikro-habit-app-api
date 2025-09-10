@@ -68,7 +68,7 @@ class AuthenticationController extends Controller
                 return response([
                     'data' => [],
                     "success" => false,
-                    'message' => trans('errors.authentication.role_missing')
+                    'message' => trans('errors.authentication.user_missing')
                 ], ResponseCode::NOT_AUTHENTICATED);
             }
 
