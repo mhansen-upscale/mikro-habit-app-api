@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Mails\RegisterUserMail;
 use App\Mails\WelcomeUserRegistrationMail;
 use App\Models\Entry;
+use App\Models\Habit;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -28,8 +29,10 @@ class EntryService
 
         Validator::make($data, [
             'habit_id' => 'required',
-            'value' => 'required',
+            'value' => 'sometimes',
         ])->validate();
+
+        $habit = Habit::find($data['habit_id']);
 
         DB::beginTransaction();
 
@@ -37,10 +40,18 @@ class EntryService
             $data['done_at'] = $entry->done_at ?? date("Y-m-d");
         }
 
+        if(empty($data['value'])) {
+            $data['value'] = $habit->target_min ?? 1;
+        }
+
         if(empty($entry)) {
 
-            $entry = new Entry($data);
-            $entry->save();
+            $entry = Entry::where("habit_id", $data['habit_id'])->where("done_at", $data['done_at'])->first();
+
+            if(empty($entry)) {
+                $entry = new Entry($data);
+                $entry->save();
+            }
         } else {
             $entry->update($data);
         }

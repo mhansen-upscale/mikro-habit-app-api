@@ -8,6 +8,7 @@ use App\Services\DataService;
 use App\Services\HabitService;
 use App\Structs\ResponseCode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HabitsController extends Controller
 {
@@ -136,7 +137,11 @@ class HabitsController extends Controller
         try {
 
             $habit = Habit::findOrFail($id);
-            $habit->forceDelete();
+
+            DB::table("entries")->where("habit_id", $id)->delete();
+            DB::table("reminders")->where("habit_id", $id)->delete();
+
+            $habit->delete();
 
             return response([
                 "data" => [],

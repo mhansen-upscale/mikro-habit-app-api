@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DevicesController;
 use App\Http\Controllers\EntriesController;
 use App\Http\Controllers\HabitsController;
@@ -34,6 +35,15 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     /**
+     * API routes stats
+     */
+    Route::group(['prefix' => 'stats'], function () {
+
+        /** secured routes */
+        Route::middleware("auth:sanctum")->get('/', [DashboardController::class, 'index']);
+    });
+
+    /**
      * API routes habits
      */
     Route::group(['prefix' => 'users'], function () {
@@ -52,11 +62,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => 'habits'], function () {
 
         /** secured routes */
-        Route::middleware("auth:sanctum")->get('/', [HabitsController::class, 'index']);
-        Route::middleware("auth:sanctum")->get('/{id}', [HabitsController::class, 'get'])->where("id", "[0-9]+");
-        Route::middleware("auth:sanctum")->post('/', [HabitsController::class, 'create']);
-        Route::middleware("auth:sanctum")->put('/{id}', [HabitsController::class, 'update'])->where("id", "[0-9]+");;
-        Route::middleware("auth:sanctum")->delete('/{id}', [HabitsController::class, 'delete'])->where("id", "[0-9]+");
+        Route::middleware(["auth:sanctum", "own-data-scope"])->get('/', [HabitsController::class, 'index']);
+        Route::middleware(["auth:sanctum", "own-data-scope"])->get('/{id}', [HabitsController::class, 'get'])->where("id", "[0-9]+");
+        Route::middleware(["auth:sanctum", "own-data-scope"])->post('/', [HabitsController::class, 'create']);
+        Route::middleware(["auth:sanctum", "own-data-scope"])->put('/{id}', [HabitsController::class, 'update'])->where("id", "[0-9]+");;
+        Route::middleware(["auth:sanctum", "own-data-scope"])->delete('/{id}', [HabitsController::class, 'delete'])->where("id", "[0-9]+");
 
     });
 

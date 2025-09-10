@@ -70,6 +70,17 @@ class HabitService
 
             $habit = new Habit($data);
             $habit->save();
+
+            $reminderData = [
+                "habit_id" => $habit->id,
+                "hour" => 13,
+                "minute" => 30,
+                "days_mask" => 127,
+                "enabled" => 1
+            ];
+
+            ReminderService::upsert($reminderData);
+
         } else {
             $habit->update($data);
         }
