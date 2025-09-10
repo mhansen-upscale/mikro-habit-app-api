@@ -14,4 +14,13 @@ class Entry extends Model
       "done_at" => "date",
       "value" => "integer"
     ];
+
+    protected $appends = [
+        "formatted_done_at"
+    ];
+
+    public function getFormattedDoneAtAttribute(): string
+    {
+        return date("d.m.Y", strtotime($this->getAttribute("done_at")));
+    }
 }
