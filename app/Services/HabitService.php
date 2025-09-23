@@ -18,6 +18,7 @@ class HabitService
      * @param int|null $id
      * @return User
      * @throws ValidationException
+     * @throws \Exception
      */
     public static function upsert(array $data, int|null $id = null)
     {
@@ -38,6 +39,13 @@ class HabitService
             'grace_total' => 'sometimes|integer',
             'grace_used' => 'sometimes|integer'
         ])->validate();
+
+        $user = User::find($data['user_id']);
+        $habits = $user->habits()->get();
+
+        if(count($habits->where("completed", false)) >= 5) {
+            throw new \Exception("user.habits.too_many");
+        }
 
         if(empty($data['cycle_length'])) {
             $data['cycle_length'] = $habit->cycle_length ?? 21;

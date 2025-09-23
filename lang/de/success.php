@@ -7,6 +7,9 @@ return [
     "show" => [
         "default" => ""
     ],
+    "create" => [
+        "default" => "Datensatz wurde angelegt!"
+    ],
     "store" => [
         "default" => "Datensatz wurde angelegt!"
     ],

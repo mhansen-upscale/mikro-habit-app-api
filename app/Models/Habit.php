@@ -18,6 +18,7 @@ class Habit extends Model
       "grace_used" => "integer",
       "target_min" => "integer",
       "is_active" => "boolean",
+      "completed" => "boolean",
       "user_id" => "integer",
     ];
 
@@ -25,7 +26,8 @@ class Habit extends Model
         "progress_bar_value",
         "has_progress_bar_value",
         "done_today",
-        "streaks"
+        "streaks",
+        "completed"
     ];
 
     /**
@@ -40,6 +42,11 @@ class Habit extends Model
     {
         $entries = $this->entries()->count();
         return $entries == 0 ? 0 : round($entries / $this->getAttribute("cycle_length"), 2);
+    }
+
+    public function getCompletedAttribute(): bool
+    {
+        return $this->entries()->count() == $this->getAttribute("cycle_length");
     }
 
     public function getHasProgressBarValueAttribute(): bool
