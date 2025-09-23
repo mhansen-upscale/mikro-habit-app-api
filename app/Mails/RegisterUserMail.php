@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -34,7 +35,8 @@ class RegisterUserMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Email Verification',
+            from: new Address(env("MAIL_FROM_ADDRESS"), 'Julia von OPTIME'),
+            subject: 'Verifiziere deine E-Mail!',
         );
     }
 

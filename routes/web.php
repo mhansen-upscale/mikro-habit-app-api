@@ -32,7 +32,7 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
     $user = User::findOrFail($validated['id']);
     $user->markEmailAsVerified();
 
-    return redirect()->to("MOIN");
+    return view("welcome");
 
 })->name('verify');
 

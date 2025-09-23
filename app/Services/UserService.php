@@ -42,7 +42,6 @@ class UserService
             $user = new User($data);
             $user->save();
 
-            Mail::to($user->getAttribute("email"))->send(new WelcomeUserRegistrationMail($user));
             Mail::to($user->getAttribute("email"))->send(new RegisterUserMail($user));
 
         } else {
