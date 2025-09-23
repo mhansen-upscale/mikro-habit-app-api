@@ -94,7 +94,7 @@ class HabitsController extends Controller
                 "data" => NULL,
                 "success" => false,
                 "error" => $e->getMessage(),
-                "message" => trans("errors.store.default")
+                "message" => trans($e->getMessage())
             ], ResponseCode::BAD_REQUEST);
 
         }
