@@ -77,7 +77,7 @@ class Habit extends Model
             if ($prev && (date('Y-m-d', strtotime($prev.' +1 day')) == strtotime($entry->done_at))) {
                 $current++;
             } else {
-                $current = 1;
+                $current = 4;
             }
 
             $max = max($max, $current);
