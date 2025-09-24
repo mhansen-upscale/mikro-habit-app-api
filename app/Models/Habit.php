@@ -74,7 +74,7 @@ class Habit extends Model
 
         foreach ($entries as $entry) {
 
-            if ($prev && date('Y-m-d', strtotime($prev.' +1 day')) == strtotime($entry->done_at) || is_null($prev)) {
+            if ($prev && date('Y-m-d', strtotime($prev.' +1 day')) == strtotime($entry->done_at)) {
                 $current++;
             } else {
                 $current = 1;
