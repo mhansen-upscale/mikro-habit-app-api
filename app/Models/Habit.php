@@ -74,11 +74,14 @@ class Habit extends Model
 
         foreach ($entries as $entry) {
 
+            /**
             if ($prev && (date('Y-m-d', strtotime($prev.' +1 day')) == strtotime($entry->done_at))) {
                 $current++;
             } else {
-                $current = 4;
-            }
+                $current = 1;
+            } **/
+
+            $current++;
 
             $max = max($max, $current);
             $prev = $entry->done_at;
